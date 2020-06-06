@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Book review web app
+{% endblock %}
+
+{% block body %}
+
+    <h1>Search text: {{data}}</h1>
+    <h2>Number of results: </h2>
+
+      <table class="table">
+        <thead class="grey lighten-2">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">ISBN</th>
+            <th scope="col">Title</th>
+            <th scope="col">Author</th>
+            <th scope="col">Year</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for book in books %}
+            <tr>
+              <th scope="row" class="nr"></th>
+              <td><a href="{{ url_for('book', isbn = book.isbn, name = session.get("name"))}}">{{book.isbn}}</a></td>
+              <td><a href="{{ url_for('book', isbn = book.isbn, name = session.get("name"))}}">{{book.title}}</a></td>
+              <td><a href="{{ url_for('book', isbn = book.isbn, name = session.get("name"))}}">{{book.author}}</a></td>
+              <td><a href="{{ url_for('book', isbn = book.isbn, name = session.get("name"))}}">{{book.year}}</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+
+    <script type="text/javascript">
+        var a = document.getElementsByClassName("nr");
+        for (var i = 0; i < a.length; i++) {
+            a[i].innerHTML = (i+1);
+        }
+    </script>
+
+{% endblock %}

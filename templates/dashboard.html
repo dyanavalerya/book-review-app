@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Book review web app
+{% endblock %}
+
+{% block body %}
+
+    <form action="{{ url_for('dashboard', name = session.get("name")) }}" method="post">
+    <h1><small> Welcome {{session.get("name")}}</small></h1>
+    
+{% endblock %}

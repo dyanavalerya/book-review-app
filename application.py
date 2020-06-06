@@ -5,7 +5,6 @@ from flask import Flask, session, render_template, request, jsonify, flash, redi
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
 from datetime import datetime

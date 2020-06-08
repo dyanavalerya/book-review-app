@@ -55,15 +55,15 @@ def search():
                 books = db.execute("SELECT * FROM imported_books WHERE (isbn LIKE :data)",
                                 {"data": '%' + data + '%'}).fetchall()
             elif str(search_choice) == 'title':
-                books = db.execute("SELECT * FROM imported_books WHERE (title LIKE :data)",
+                books = db.execute("SELECT * FROM imported_books WHERE (lower(title) LIKE lower(:data))",
                                 {"data": '%' + data + '%'}).fetchall()
             elif str(search_choice) == 'author':
-                books = db.execute("SELECT * FROM imported_books WHERE (author LIKE :data)",
+                books = db.execute("SELECT * FROM imported_books WHERE (lower(author) LIKE lower(:data))",
                                 {"data": '%' + data + '%'}).fetchall()
             else:
                 books = db.execute("""SELECT * FROM imported_books WHERE
-                    (isbn LIKE :data) OR (title LIKE :data)
-                    OR (author LIKE :data)""",
+                    (isbn LIKE :data) OR (lower(title) LIKE lower(:data))
+                    OR (lower(author) LIKE lower(:data))""",
                     {"data": '%' + data + '%'}).fetchall()
             if not books:
                 flash('No results found  ¯\_(ツ)_/¯', 'error')
@@ -191,13 +191,11 @@ def book(isbn, name):
     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "saCxBQEHrhQK1AL0EiDg", "isbns": isbn})
     reviews_count = res.json()["books"][0]["reviews_count"]
     average_rating=res.json()["books"][0]["average_rating"]
-    reviews = db.execute("SELECT * FROM reviews WHERE reviews.book_isbn=:isbn", {"isbn": isbn}).fetchall()
+    reviews = db.execute("SELECT review_message, username, date_posted, rating FROM reviews INNER JOIN users ON reviews.user_id=users.id WHERE reviews.book_isbn=:isbn", {"isbn": isbn}).fetchall()
     id = session.get("id")
     review = db.execute("SELECT user_id FROM reviews WHERE reviews.book_isbn=:isbn AND reviews.user_id=:id", {"isbn": isbn, "id": id}).fetchone()
     user_reviews_count = db.execute("SELECT COUNT(review_message) FROM reviews WHERE reviews.user_id=:id", {"id": id}).fetchall()
-    user_of_review = db.execute("SELECT users.username FROM users \
-                                INNER JOIN reviews ON users.id=reviews.user_id \
-                                WHERE reviews.book_isbn=:isbn", {"isbn": isbn}).fetchone()
+
     books = search()
     data = request.form.get("searchData")
     if books:
@@ -220,7 +218,7 @@ def book(isbn, name):
             flash('Your review has been added successfully!', 'success')
             return redirect(url_for('book', isbn = book.isbn, name = session.get("name")))
 
-    return render_template('book.html', book=book, reviews = reviews, reviews_count = reviews_count, average_rating = average_rating, user_of_review = user_of_review)
+    return render_template('book.html', book=book, reviews = reviews, reviews_count = reviews_count, average_rating = average_rating)
 
 # Get book by isbn api
 @app.route('/api/<isbn>')

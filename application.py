@@ -78,6 +78,7 @@ def index():
 # Register route
 @app.route("/register", methods=['GET', "POST"])
 def register():
+    session.clear()
     if request.method == 'POST':
         users = db.execute("SELECT * FROM users").fetchall()
         name = request.form.get("name")
@@ -112,6 +113,7 @@ def register():
 # Login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    session.clear()
     if request.method == 'POST':
         username = request.form.get("username")
         password_candidate = request.form.get("password")
@@ -193,7 +195,9 @@ def book(isbn, name):
     id = session.get("id")
     review = db.execute("SELECT user_id FROM reviews WHERE reviews.book_isbn=:isbn AND reviews.user_id=:id", {"isbn": isbn, "id": id}).fetchone()
     user_reviews_count = db.execute("SELECT COUNT(review_message) FROM reviews WHERE reviews.user_id=:id", {"id": id}).fetchall()
-    # user_of_review = db.execute("SELECT username FROM users WHERE users.id=review.user_id").fetchone()
+    user_of_review = db.execute("SELECT users.username FROM users \
+                                INNER JOIN reviews ON users.id=reviews.user_id \
+                                WHERE reviews.book_isbn=:isbn", {"isbn": isbn}).fetchone()
     books = search()
     data = request.form.get("searchData")
     if books:
@@ -202,7 +206,6 @@ def book(isbn, name):
     if request.method == 'POST' and "review_message" in request.form or "rating" in request.form:
         review_message = request.form.get("review_message")
         rating_value = request.form.get("rating")
-        # user_id_of_review = db.execute("SELECT user_id FROM reviews WHERE review_message=:review_message", {"review_message":review_message}).fetchone()
 
         if review is not None:
             flash('You cannot write more than one review :/', 'error')
@@ -217,7 +220,7 @@ def book(isbn, name):
             flash('Your review has been added successfully!', 'success')
             return redirect(url_for('book', isbn = book.isbn, name = session.get("name")))
 
-    return render_template('book.html', book=book, reviews = reviews, reviews_count = reviews_count, average_rating = average_rating)
+    return render_template('book.html', book=book, reviews = reviews, reviews_count = reviews_count, average_rating = average_rating, user_of_review = user_of_review)
 
 # Get book by isbn api
 @app.route('/api/<isbn>')

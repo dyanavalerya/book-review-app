@@ -154,3 +154,7 @@ my-class{
   display: inline-block !important;
   vertical-align:top;
 }
+
+h1.big-text {
+  font-size: 70px;
+}

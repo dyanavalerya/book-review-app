@@ -35,13 +35,12 @@ This web app contains filrered (by isbn, title, author) book search, review subm
 
 ### Gallery
 ```gallery(42h)
-![2020-06-08_10-23.png](:storage/03878f0e-7409-4dad-94f7-35fa70435bff/6769d480.png)
-![2020-06-08_10-03.png](:storage/03878f0e-7409-4dad-94f7-35fa70435bff/01bf29d8.png)
-![2020-06-08_10-04.png](:storage/03878f0e-7409-4dad-94f7-35fa70435bff/55fb889a.png)
-![2020-06-08_10-05.png](:storage/03878f0e-7409-4dad-94f7-35fa70435bff/e3a9978e.png)
+![](/img/2020-06-08_17-10.png)
+![](/img/2020-06-08_17-10.png)
+![](/img/2020-06-08_17-10.png)
 ```
 
 DB Schema
 ---------
-![8a2e0743.png](:storage/03878f0e-7409-4dad-94f7-35fa70435bff/8a2e0743.png)
+![](/img/2020-06-08_17-10.png)
 
